@@ -1,22 +1,22 @@
 pipeline {
     environment {
-    registry = "nqvietuit/thesis-server"
-    registryCredential = 'dockerhub'
-    dockerImage = ''
+        registry = "nqvietuit/thesis-server"
+        registryCredential = 'dockerhub'
+        dockerImage = ''
     }
 
     agent any
     stages {
             stage('Cloning our Git') {
                 steps {
-                git 'https://github.com/VietNe/thesis-server.git'
+                    git branch: 'main', url: 'https://github.com/VietNe/thesis-server.git'
                 }
             }
 
             stage('Building Docker Image') {
                 steps {
                     script {
-                        dockerImage = docker.build registry + ":$BUILD_NUMBER"
+                        dockerImage = docker.build(registry)
                     }
                 }
             }
@@ -25,14 +25,15 @@ pipeline {
                 steps {
                     script {
                         docker.withRegistry('', registryCredential) {
-                        dockerImage.push()
+                            dockerImage.push('v1.0.${env.BUILD_NUMBER}')
+                            dockerImage.push('latest')
                         }
                     }
                 }
             }
 
             stage('Cleaning Up') {
-                steps{
+                steps {
                   sh "docker rmi --force $registry:$BUILD_NUMBER"
                 }
             }
