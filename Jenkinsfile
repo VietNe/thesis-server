@@ -45,6 +45,7 @@ pipeline {
                         sh '''
                         ARGOCD_SERVER="35.186.156.123:31904"
                         APP_NAME="aqi-server"
+                        ARGO_INSECURE_SKIP_VERIFY=true
                         
                         # Deploy to ArgoCD
                         ARGOCD_SERVER=$ARGOCD_SERVER argocd --grpc-web app sync $APP_NAME --force
