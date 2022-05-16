@@ -3,9 +3,6 @@ pipeline {
         registry = "nqvietuit/thesis-server"
         registryCredential = 'dockerhub'
         dockerImage = ''
-        middleVerion = 1
-        version = 1
-        buildVersion = 1
     }
 
     agent any
@@ -19,8 +16,7 @@ pipeline {
             stage('Building Docker Image') {
                 steps {
                     script {
-                        buildVersion = env.BUILD_NUMBER
-                        dockerImage = docker.build registry + ":v$version.$middleVersion.$buildVersion"
+                        dockerImage = docker.build registry + ":v1.$BUILD_NUMBER"
                     }
                 }
             }
@@ -38,7 +34,7 @@ pipeline {
 
             stage('Cleaning Up') {
                 steps{
-                  sh "docker rmi --force $registry:$BUILD_NUMBER"
+                  sh "docker rmi --force $registry:v1.$BUILD_NUMBER"
                   sh "docker rmi --force $registry:latest"
                 }
             }
