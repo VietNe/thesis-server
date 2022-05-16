@@ -1,10 +1,11 @@
 pipeline {
     environment {
-    registry = "nqvietuit/thesis-server"
-    registryCredential = 'dockerhub'
-    dockerImage = ''
-    middleVerion = 1
-    version = 1
+        registry = "nqvietuit/thesis-server"
+        registryCredential = 'dockerhub'
+        dockerImage = ''
+        middleVerion = 1
+        version = 1
+        buildVersion = 1
     }
 
     agent any
@@ -18,10 +19,8 @@ pipeline {
             stage('Building Docker Image') {
                 steps {
                     script {
-                        if (env.BUILD_NUMBER > 10) {
-                            middleVerion = middleVerion + 1
-                        }
-                        dockerImage = docker.build registry + ":v$version.$middleVersion.$BUILD_NUMBER"
+                        buildVersion = env.BUILD_NUMBER
+                        dockerImage = docker.build registry + ":v$version.$middleVersion.$buildVersion"
                     }
                 }
             }
