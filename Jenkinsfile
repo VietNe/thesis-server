@@ -43,7 +43,7 @@ pipeline {
              steps {
                      withCredentials([string(credentialsId: "argo-deploy", variable: 'ARGOCD_AUTH_TOKEN')]) {
                         sh '''
-                        ARGOCD_SERVER="35.186.156.123:31904/"
+                        ARGOCD_SERVER="35.186.156.123:31904"
                         APP_NAME="aqi-server"
                         
                         # Deploy to ArgoCD
