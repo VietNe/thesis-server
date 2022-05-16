@@ -16,11 +16,11 @@ pipeline {
             }
 
             stage('Building Docker Image') {
-                if (BUILD_NUMBER > 10) {
-                    middleVerion = middleVerion + 1
-                }
                 steps {
                     script {
+                        if (env.BUILD_NUMBER > 10) {
+                            middleVerion = middleVerion + 1
+                        }
                         dockerImage = docker.build registry + ":v$version.$middleVersion.$BUILD_NUMBER"
                     }
                 }
