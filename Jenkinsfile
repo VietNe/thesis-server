@@ -32,12 +32,7 @@ pipeline {
                 }
             }
 
-            stage('Cleaning Up') {
-                steps{
-                  sh "docker rmi --force $registry:v1.$BUILD_NUMBER"
-                  sh "docker rmi --force $registry:latest"
-                }
-            }
+
 
             stage ('Deploy K3S') {
              steps {
@@ -47,12 +42,23 @@ pipeline {
                         APP_NAME="aqi-server"
                         ARGO_INSECURE=true
                         
+                        IMAGE_DIGEST=$(docker image inspect nqvietuit/thesis-server:latest -f '{{join .RepoDigests ","}}')
+                        # Customize image 
+                        ARGOCD_SERVER=$ARGOCD_SERVER argocd --insecure --grpc-web app set $APP_NAME --kustomize-image $IMAGE_DIGEST
+
                         # Deploy to ArgoCD
-                        ARGOCD_SERVER=$ARGOCD_SERVER argocd --insecure --grpc-web app sync $APP_NAME --force --prune
+                        ARGOCD_SERVER=$ARGOCD_SERVER argocd --insecure --grpc-web app sync $APP_NAME --force
                         ARGOCD_SERVER=$ARGOCD_SERVER argocd --insecure --grpc-web app wait $APP_NAME --timeout 600
                         '''
                }
             }
         }
+
+            stage('Cleaning Up') {
+                steps{
+                  sh "docker rmi --force $registry:v1.$BUILD_NUMBER"
+                  sh "docker rmi --force $registry:latest"
+                }
+            }
         }
     }
