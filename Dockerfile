@@ -18,7 +18,7 @@ ENV PORT=8000
 ENV DATABASE=mongodb+srv://admin:XXxx11@@@aqi.ntxhr.mongodb.net/AQI?retryWrites=true&w=majority
 ENV JWT_SECRET=s0m3thjngv3rys3cr3t
 ENV JWT_EXPIRES_IN=360000
-ENV NODE_ENV=DEVELOPMENT
+ENV NODE_ENV=PRODUCTION
 
 EXPOSE 8000
 CMD [ "node", "server.js" ]
