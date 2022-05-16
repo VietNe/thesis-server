@@ -48,7 +48,7 @@ pipeline {
                         ARGO_INSECURE=true
                         
                         # Deploy to ArgoCD
-                        ARGOCD_SERVER=$ARGOCD_SERVER argocd --insecure --grpc-web app sync $APP_NAME --force
+                        ARGOCD_SERVER=$ARGOCD_SERVER argocd --insecure --grpc-web app sync $APP_NAME --force --prune
                         ARGOCD_SERVER=$ARGOCD_SERVER argocd --insecure --grpc-web app wait $APP_NAME --timeout 600
                         '''
                }
