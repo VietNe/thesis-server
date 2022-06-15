@@ -47,6 +47,22 @@ pipeline {
                 }
             }
 
+            stage ('Deploy K3S') {
+             steps {
+                     withCredentials([string(credentialsId: "argo-deploy", variable: 'ARGOCD_AUTH_TOKEN')]) {
+                        sh '''
+                        ARGOCD_SERVER="35.186.156.123:31904"
+                        APP_NAME="aqi-server"
+                        ARGO_INSECURE=true
+                        
+                        # Deploy to ArgoCD
+                        ARGOCD_SERVER=$ARGOCD_SERVER argocd --insecure --grpc-web app sync $APP_NAME --force
+                        ARGOCD_SERVER=$ARGOCD_SERVER argocd --insecure --grpc-web app wait $APP_NAME --timeout 600
+                        '''
+               }
+            }
+        }
+
             stage('Cleaning Up') {
                 steps{
                   sh "docker rmi --force $registry:v1.$BUILD_NUMBER"
