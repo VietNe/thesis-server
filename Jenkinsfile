@@ -33,20 +33,22 @@ pipeline {
             }
 
             stage('Update GIT') {
-                script {
-                    withCredentials([string(credentialsId: "github-token", variable: 'GITHUB_TOKEN')]) {
-                        sh "git config user.email nqviet.dev@gmail.com"
-                        sh "git config user.name VietNe"
-                        sh "git clone https://github.com/VietNe/thesis-cd.git"
-                        sh "cd thesis-cd"
-                        sh "cat nginx.yaml"
-                        //sh "git switch master"
-                        // sh "cat deployment.yaml"
-                        // sh "sed -i 's+raj80dockerid/test.*+raj80dockerid/test:${DOCKERTAG}+g' deployment.yaml"
-                        // sh "cat deployment.yaml"
-                        // sh "git add ."
-                        // sh "git commit -m 'Done by Jenkins Job changemanifest: ${env.BUILD_NUMBER}'"
-                        // sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${GIT_USERNAME}/kubernetesmanifest.git HEAD:main"
+                steps {
+                    script {
+                        withCredentials([string(credentialsId: "github-token", variable: 'GITHUB_TOKEN')]) {
+                            sh "git config user.email nqviet.dev@gmail.com"
+                            sh "git config user.name VietNe"
+                            sh "git clone https://github.com/VietNe/thesis-cd.git"
+                            sh "cd thesis-cd"
+                            sh "cat nginx.yaml"
+                            //sh "git switch master"
+                            // sh "cat deployment.yaml"
+                            // sh "sed -i 's+raj80dockerid/test.*+raj80dockerid/test:${DOCKERTAG}+g' deployment.yaml"
+                            // sh "cat deployment.yaml"
+                            // sh "git add ."
+                            // sh "git commit -m 'Done by Jenkins Job changemanifest: ${env.BUILD_NUMBER}'"
+                            // sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${GIT_USERNAME}/kubernetesmanifest.git HEAD:main"
+                    }
                 }
             }
 
