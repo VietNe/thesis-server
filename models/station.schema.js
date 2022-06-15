@@ -6,6 +6,9 @@ const stationSchema = mongoose.Schema({
     lat: Number,
     lon: Number,
   },
+  area: {
+    type: String,
+  },
   currentAQI: Number,
   data: [
     {
@@ -24,12 +27,6 @@ const stationSchema = mongoose.Schema({
       createdAt: {
         type: Date,
       },
-    },
-  ],
-  predicts: [
-    {
-      Date: { type: Date },
-      value: Number,
     },
   ],
   createdAt: {

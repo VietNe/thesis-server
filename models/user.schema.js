@@ -15,10 +15,12 @@ const userSchema = mongoose.Schema({
     trim: true,
     validate: [validator.isEmail, 'Please provide a valid email'],
   },
-  // phone: [String],
-  // address: {
-  //   type: String,
-  // },
+  phone: {
+    type: String,
+  },
+  address: {
+    type: String,
+  },
   password: {
     type: String,
     required: [true, 'Please provide a password'],
@@ -30,6 +32,9 @@ const userSchema = mongoose.Schema({
     },
     trim: true,
     select: false,
+  },
+  NameDevice: {
+    type: String,
   },
   role: {
     type: String,

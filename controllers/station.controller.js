@@ -1,4 +1,5 @@
 const Station = require('../models/station.schema');
+const User = require('../models/user.schema');
 const AppError = require('../utils/appError');
 
 exports.getAllStation = async (req, res, next) => {
@@ -109,7 +110,54 @@ exports.getStationById = async (req, res, next) => {
 
   const station = await Station.findById(stationId);
   if (!station) {
-    return next(new AppError('No document found with that ID', 404));
+    return res
+      .status(404)
+      .send(new AppError('No document found with that ID', 404));
+  }
+  res.json(
+    {
+      status: 'success',
+      data: station,
+    },
+    200
+  );
+};
+
+exports.getDashboard = async (req, res, next) => {
+  let user = await User.findById(req.user.id);
+  if (!user) {
+    return res.status(404).send(new AppError('User not found!', 404));
+  }
+  let stations = await Station.find().sort({ currentAQI: -1 });
+  const userCount = await User.count();
+  let station = null;
+  if (user.role === 'user') {
+    station = await Station.findOne({ NameDevice: user.NameDevice });
+  } else {
+    station = stations ? stations[0] : null;
+  }
+  res.json(
+    {
+      status: 'success',
+      data: {
+        station,
+        stationCount: stations.length || 0,
+        userCount,
+      },
+    },
+    200
+  );
+};
+exports.getStationByDeviceName = async (req, res, next) => {
+  let user = await User.findById(req.user.id);
+
+  if (!user) {
+    return res.status(404).send(new AppError('User not found!', 404));
+  }
+
+  const station = await Station.findOne({ NameDevice: user.NameDevice });
+  if (!station) {
+    return res.status(404).send(new AppError('Station not found!', 404));
   }
   res.json(
     {

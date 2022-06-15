@@ -5,18 +5,18 @@ const userController = require('../controllers/user.controller');
 const router = express.Router();
 
 router.post('/login', authController.login);
-router.post('/admin/login', authController.adminLogin);
-router.post('/admin/signup', authController.signup);
+router.post('/signup', authController.signup);
 
 // Protect all routes after this middleware
 router.use(authController.protect);
 
-// router.patch('/updateMe', userController.updateMe);
-// router.get('/me', userController.getMe, userController.getUser);
+router.patch('/updateMe', userController.updateMe);
+router.get('/me', userController.getMe, userController.getUser);
 
 router.use(authController.restrictTo('admin'));
 
 router.route('/').get(userController.getAllUsers);
+router.route('/admin/signup').post(userController.createUser);
 
 router
   .route('/:id')

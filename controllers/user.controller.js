@@ -21,12 +21,14 @@ exports.getMe = (req, res, next) => {
 exports.updateMe = catchAsync(async (req, res, next) => {
   // 1) Create error if user POSTs password data
   if (req.body.password || req.body.passwordConfirm) {
-    return next(
-      new AppError(
-        'This route is not for password updates. Please use /updateMyPassword.',
-        400
-      )
-    );
+    return res
+      .status(400)
+      .send(
+        new AppError(
+          'This route is not for password updates. Please use /updateMyPassword.',
+          400
+        )
+      );
   }
 
   // 2) Filtered out unwanted fields names that are not allowed to be updated
@@ -51,5 +53,6 @@ exports.getUser = factory.getOne(User);
 exports.getAllUsers = factory.getAll(User);
 
 // Do NOT update passwords with this!
+exports.createUser = factory.createOne(User);
 exports.updateUser = factory.updateOne(User);
 exports.deleteUser = factory.deleteOne(User);
