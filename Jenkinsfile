@@ -34,25 +34,26 @@ pipeline {
 
 
 
-            stage ('Deploy K3S') {
-             steps {
-                     withCredentials([string(credentialsId: "argo-deploy", variable: 'ARGOCD_AUTH_TOKEN')]) {
-                        sh '''
-                        ARGOCD_SERVER="35.186.156.123:31904"
-                        APP_NAME="aqi-server"
-                        ARGO_INSECURE=true
-                        
-                        IMAGE_DIGEST=$(docker image inspect nqvietuit/thesis-server:latest -f '{{join .RepoDigests ","}}')
-                        # Customize image 
-                        ARGOCD_SERVER=$ARGOCD_SERVER argocd --insecure --grpc-web app set $APP_NAME --kustomize-image $IMAGE_DIGEST
-
-                        # Deploy to ArgoCD
-                        ARGOCD_SERVER=$ARGOCD_SERVER argocd --insecure --grpc-web app sync $APP_NAME --force
-                        ARGOCD_SERVER=$ARGOCD_SERVER argocd --insecure --grpc-web app wait $APP_NAME --timeout 600
-                        '''
-               }
+            stage('Update GIT') {
+                        script {
+                            catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                                 withCredentials([string(credentialsId: "github-token", variable: 'GITHUB_TOKEN')]) {
+                                    //def encodedPassword = URLEncoder.encode("$GIT_PASSWORD",'UTF-8')
+                                    sh "git config user.email nqviet.dev@gmail.com"
+                                    sh "git config user.name VietNe"
+                                    sh "git clone https://github.com/VietNe/thesis-cd.git"
+                                    sh "cd thesis-cd"
+                                    sh "cat nginx.yml"
+                                    //sh "git switch master"
+                                    // sh "cat deployment.yaml"
+                                    // sh "sed -i 's+raj80dockerid/test.*+raj80dockerid/test:${DOCKERTAG}+g' deployment.yaml"
+                                    // sh "cat deployment.yaml"
+                                    // sh "git add ."
+                                    // sh "git commit -m 'Done by Jenkins Job changemanifest: ${env.BUILD_NUMBER}'"
+                                    // sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${GIT_USERNAME}/kubernetesmanifest.git HEAD:main"
+                        }
+                }
             }
-        }
 
             stage('Cleaning Up') {
                 steps{
